@@ -24,6 +24,7 @@ class CreateAoisTable extends Migration
             $table->string('mtscbat_remarks')->nullable();
             $table->string('MTSCBAT')->nullable();
             $table->text('Remarks')->nullable();
+            $table->text('pictures')->nullable();
             $table->timestamps();
         });
     }

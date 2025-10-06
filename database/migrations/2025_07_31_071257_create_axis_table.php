@@ -18,6 +18,7 @@ class CreateAxisTable extends Migration
             $table->integer('PhysicalQty')->nullable();
             $table->text('mtscbat_remarks')->nullable();
             $table->text('pictures')->nullable();
+            $table->text('Remarks')->nullable();
             $table->timestamps();
         });
     }
