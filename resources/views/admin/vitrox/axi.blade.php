@@ -65,41 +65,53 @@
         @foreach ($axiData as $item)
         <tr>
             <td class="text-center">
-                {{-- DETAIL button (mata) --}}
-                <a href="javascript:void(0);"
-                    class="btn-detail"
-                    title="Lihat Detail"
-                    data-toggle="modal"
-                    data-target="#detailModal"
-                    data-id="{{ $item->id }}"
-                    data-partnum="{{ $item->PartNum }}"
-                    data-partdesc="{{ $item->PartDesc }}"
-                    data-warehouse="{{ $item->WareHouseCode }}"
-                    data-binnum="{{ $item->BinNum }}"
-                    data-maintranqty="{{ $item->MainTranQty }}"
-                    data-physicalqty="{{ $item->PhysicalQty }}"
-                    data-remarks="{{ $item->mtscbat_remarks }}"
-                    data-pictures="{{ $item->pictures ? asset($item->pictures) : '' }}">
-                    <i class="fa fa-eye" style="color: #1e88e5; margin-right:8px;"></i>
-                </a>
+                <div class="d-flex justify-content-center align-items-center" style="gap: 8px;">
+                     {{-- DETAIL button (mata) --}}
+                    <a href="javascript:void(0);"
+                        class="btn-detail"
+                        title="Lihat Detail"
+                        data-toggle="modal"
+                        data-target="#detailModal"
+                        data-id="{{ $item->id }}"
+                        data-partnum="{{ $item->PartNum }}"
+                        data-partdesc="{{ $item->PartDesc }}"
+                        data-warehouse="{{ $item->WareHouseCode }}"
+                        data-binnum="{{ $item->BinNum }}"
+                        data-maintranqty="{{ $item->MainTranQty }}"
+                        data-physicalqty="{{ $item->PhysicalQty }}"
+                        data-remarks="{{ $item->mtscbat_remarks }}"
+                        data-pictures="{{ $item->pictures ? asset($item->pictures) : '' }}">
+                        <i class="fa fa-eye" style="color: #1e88e5; margin-right:8px;"></i>
+                    </a>
 
-                {{-- EDIT button (pensil) --}}
-                <a href="javascript:void(0);"
-                    class="btn-edit"
-                    title="Edit Data"
-                    data-toggle="modal"
-                    data-target="#editModal"
-                    data-id="{{ $item->id }}"
-                    data-partnum="{{ $item->PartNum }}"
-                    data-partdesc="{{ $item->PartDesc }}"
-                    data-warehouse="{{ $item->WareHouseCode }}"
-                    data-binnum="{{ $item->BinNum }}"
-                    data-maintranqty="{{ $item->MainTranQty }}"
-                    data-physicalqty="{{ $item->PhysicalQty }}"
-                    data-remarks="{{ $item->mtscbat_remarks }}"
-                    data-pictures="{{ $item->pictures ? asset($item->pictures) : '' }}">
-                    <i class="fa fa-pencil" style="color: #28a745;"></i>
-                </a>
+                    {{-- EDIT button (pensil) --}}
+                    <a href="javascript:void(0);"
+                        class="btn-edit"
+                        title="Edit Data"
+                        data-toggle="modal"
+                        data-target="#editModal"
+                        data-id="{{ $item->id }}"
+                        data-partnum="{{ $item->PartNum }}"
+                        data-partdesc="{{ $item->PartDesc }}"
+                        data-warehouse="{{ $item->WareHouseCode }}"
+                        data-binnum="{{ $item->BinNum }}"
+                        data-maintranqty="{{ $item->MainTranQty }}"
+                        data-physicalqty="{{ $item->PhysicalQty }}"
+                        data-remarks="{{ $item->mtscbat_remarks }}"
+                        data-pictures="{{ $item->pictures ? asset($item->pictures) : '' }}">
+                        <i class="fa fa-pencil" style="color: #28a745;"></i>
+                    </a>
+                    {{-- DELETE button (tong sampah) --}}
+                    <form action="{{ route('admin.vitrox.delete.axi', $item->id) }}" method="POST" style="display:inline;"
+                        onsubmit="return confirm('Yakin ingin menghapus data ini? Tindakan ini tidak bisa dibatalkan.');"
+                        style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-link p-0 m-0" title="Hapus Data">
+                            <i class="fa fa-trash" style="color: #dc3545;"></i>
+                        </button>
+                    </form>
+                </div>
             </td>
 
             <td>{{ $item->PartNum }}</td>
@@ -133,7 +145,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 id="detailModalLabel" class="modal-title">Detail Data AXI</h5>
+                <h3 id="detailModalLabel" class="modal-title"><b>Detail Data AXI</b></h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -188,7 +200,7 @@
             <form action="{{ route('admin.vitrox.add.axi') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addAxiModalLabel">Tambah Data AXI Manual</h5>
+                    <h3 class="modal-title" id="addAxiModalLabel"><b>Tambah Data AXI Manual</b></h3>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span>&times;</span>
                     </button>
@@ -207,7 +219,7 @@
 
                     <div class="form-group">
                         <label>Warehouse Code</label>
-                        <input type="text" name="WarehouseCode" class="form-control" required>
+                        <input type="text" name="WareHouseCode" class="form-control" required>
                     </div>
 
                     <div class="form-group">
@@ -250,13 +262,16 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             {{-- form akan submit ke route update (controller harus membuat route dan logic) --}}
-            <form id="editAxiForm" method="POST" action="{{ route('admin.vitrox.update.axi', $item->id) }}" enctype="multipart/form-data">
+            <form id="editAxiForm" method="POST"
+                action="{{ isset($item) ? route('admin.vitrox.update.axi', $item->id) : '' }}"
+                enctype="multipart/form-data">
+
                 @csrf
                 {{-- gunakan hidden id agar controller tahu record mana yang diupdate --}}
                 <input type="hidden" name="id" id="editId">
 
                 <div class="modal-header">
-                    <h5 id="editModalLabel" class="modal-title">Edit Data AXI</h5>
+                    <h3 id="editModalLabel" class="modal-title"><b>Edit Data AXI</b></h3>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -317,6 +332,8 @@
         </div>
     </div>
 </div>
+
+
 
 @endsection
 

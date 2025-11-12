@@ -55,7 +55,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'PartNum' => 'required|string|max:255',
             'PartDesc' => 'required|string|max:255',
-            'WarehouseCode' => 'required|string|max:255',
+            'WareHouseCode' => 'required|string|max:255',
             'BinNum' => 'nullable|string|max:255',
             'MainTranQty' => 'nullable|numeric',
             'PhysicalQty' => 'nullable|numeric',
@@ -106,6 +106,23 @@ class ProductController extends Controller
         return back()->with('success', 'Data AXI berhasil diperbarui.');
     }
 
+    public function destroyAxi($id)
+    {
+        try {
+            $axi = Axi::findOrFail($id);
+
+            // hapus gambar kalau ada
+            if ($axi->pictures && file_exists(public_path($axi->pictures))) {
+                unlink(public_path($axi->pictures));
+            }
+
+            $axi->delete();
+
+            return redirect()->back()->with('success', 'Data AXI berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
 
     public function truncateAxi(Request $request)
     {

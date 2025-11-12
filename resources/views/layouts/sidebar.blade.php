@@ -39,9 +39,9 @@
                 <ul class="treeview-menu">
                     <li><a href="{{ route('admin.vitrox.vitDashboard') }}"><i class="fa fa-circle-o"></i> Dashboard</a></li>
                     <li><a href="{{ route('admin.vitrox.machines') }}"><i class="fa fa-circle-o"></i> SMT Machines</a></li>
-                    <li><a href="{{ route('admin.vitrox.aoi') }}"><i class="fa fa-circle-o"></i> AOI</a></li>
-                    <li><a href="{{ route('admin.vitrox.spi') }}"><i class="fa fa-circle-o"></i> SPI</a></li>
-                    <li><a href="{{ route('admin.vitrox.axi') }}"><i class="fa fa-circle-o"></i> AXI</a></li>
+                    <li><a href="{{ route('admin.vitrox.aoi') }}"><i class="fa fa-circle-o"></i> AOI Parts</a></li>
+                    <li><a href="{{ route('admin.vitrox.spi') }}"><i class="fa fa-circle-o"></i> SPI Parts</a></li>
+                    <li><a href="{{ route('admin.vitrox.axi') }}"><i class="fa fa-circle-o"></i> AXI Parts</a></li>
                 </ul>
             </li>
             <li class="treeview">
@@ -53,9 +53,9 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> ICT Machines</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Genrad</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Agilent</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> ICT Parts</a></li>
+                    <!-- <li><a href="#"><i class="fa fa-circle-o"></i> Genrad</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Agilent</a></li> -->
                 </ul>
             </li>
 

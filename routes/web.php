@@ -33,6 +33,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/axi', [ProductController::class, 'axi'])->name('axi');
         Route::post('/axi/add', [ProductController::class, 'addDataAxi'])->name('add.axi');
         Route::post('/axi/{id}', [ProductController::class, 'updateAxi'])->name('update.axi');
+        Route::delete('/vitrox/delete/axi/{id}', [ProductController::class, 'destroyAxi'])->name('delete.axi');
         Route::post('truncate-axi', [ProductController::class, 'truncateAxi'])->name('truncate.axi');
         Route::post('/import-aoi', [ProductController::class, 'importAoi'])->name('import.aoi');
         Route::post('/import-axi', [ProductController::class, 'importAxi'])->name('import.axi');
