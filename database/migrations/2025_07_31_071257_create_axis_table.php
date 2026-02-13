@@ -9,7 +9,7 @@ class CreateAxisTable extends Migration
     public function up(): void
     {
         Schema::create('axis', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('axi_id');
             $table->string('PartNum')->nullable();
             $table->string('PartDesc')->nullable();
             $table->string('WareHouseCode')->nullable();

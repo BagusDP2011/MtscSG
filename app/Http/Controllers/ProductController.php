@@ -7,7 +7,7 @@ use App\Models\Aoi;
 use App\Models\Axi;
 use App\Imports\AoiImport;
 use App\Imports\AxiImport;
-
+use App\Models\AxiImage;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -79,13 +79,13 @@ class ProductController extends Controller
     public function updateAxi(Request $req)
     {
         $req->validate([
-            'id' => 'required|integer|exists:axis,id',
+            'axi_id' => 'required|integer|exists:axis,axi_id',
             'PartNum' => 'required|string',
             'pictures' => 'nullable|image|max:2048',
             // ... other rules
         ]);
 
-        $axi = Axi::findOrFail($req->id);
+        $axi = Axi::findOrFail($req->axi_id);
 
         if ($req->hasFile('pictures')) {
             $file = $req->file('pictures');
@@ -106,10 +106,10 @@ class ProductController extends Controller
         return back()->with('success', 'Data AXI berhasil diperbarui.');
     }
 
-    public function destroyAxi($id)
+    public function destroyAxi($axi_id)
     {
         try {
-            $axi = Axi::findOrFail($id);
+            $axi = Axi::findOrFail($axi_id);
 
             // hapus gambar kalau ada
             if ($axi->pictures && file_exists(public_path($axi->pictures))) {
@@ -137,7 +137,7 @@ class ProductController extends Controller
 
     public function axi()
     {
-        $axiData = Axi::all();
+        $axiData = Axi::with('images')->get();
         return view('admin.vitrox.axi', compact('axiData'));
     }
 }

@@ -28,23 +28,47 @@
             </div>
         </form>
     </div>
+    <div class="col-md-6 d-flex">
+        <form action="{{ route('admin.vitrox.axi.bulkUploadImages') }}"
+            method="POST"
+            enctype="multipart/form-data">
+            @csrf
+            {{-- optional: link ke AXI --}}
+            <input type="hidden" name="axi_id" value="{{ $item->axi_id ?? '' }}">
 
-    <div class="col-md-4"></div>
+            <div class="form-group">
+                <label>Bulk Upload Images</label>
+                <input type="file"
+                    name="images[]"
+                    class="form-control"
+                    multiple
+                    accept="image/*"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                Upload Images
+            </button>
+        </form>
+    </div>
 
-    <div class="col-md-2 d-flex" style="padding-top: 60px; padding-right:10px;">
+    <div class="col-md-8 d-flex"></div>
+    <div class="col-md-2 d-flex" style="padding-left: 10px; padding-bottom: 5px; padding-right: 5px; display:flex; justify-content:flex-end;">
+        {{-- Tombol Tambah Data --}}
+        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addAxiModal">
+            + Tambah Data Manual
+        </button>
+    </div>
+
+    <div class="col-md-2 d-flex" style="padding-bottom: 5px; padding-right: 10px; display:flex; justify-content:flex-end;">
         <form action="{{ route('admin.vitrox.truncate.axi') }}" method="POST"
             onsubmit="return confirm('Yakin ingin mengosongkan seluruh data AXI? Tindakan ini tidak bisa dibatalkan.');"
-            class="w-100">
+            class="w-50">
             @csrf
-            <button type="submit" class="btn btn-danger w-100">Truncate AXI</button>
+            <button type="submit" class="btn btn-danger w-50">Truncate AXI</button>
         </form>
     </div>
 </div>
-
-{{-- Tombol Tambah Data --}}
-<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addAxiModal">
-    + Tambah Data Manual
-</button>
+<div style="border-bottom: 2px solid #ccc; margin: 20px 0;"></div>
 
 <table id="aoiTable" class="table table-bordered table-striped">
     <thead class="thead-dark">
@@ -66,13 +90,13 @@
         <tr>
             <td class="text-center">
                 <div class="d-flex justify-content-center align-items-center" style="gap: 8px;">
-                     {{-- DETAIL button (mata) --}}
+                    {{-- DETAIL button (mata) --}}
                     <a href="javascript:void(0);"
                         class="btn-detail"
                         title="Lihat Detail"
                         data-toggle="modal"
                         data-target="#detailModal"
-                        data-id="{{ $item->id }}"
+                        data-id="{{ $item->axi_id }}"
                         data-partnum="{{ $item->PartNum }}"
                         data-partdesc="{{ $item->PartDesc }}"
                         data-warehouse="{{ $item->WareHouseCode }}"
@@ -90,7 +114,7 @@
                         title="Edit Data"
                         data-toggle="modal"
                         data-target="#editModal"
-                        data-id="{{ $item->id }}"
+                        data-id="{{ $item->axi_id }}"
                         data-partnum="{{ $item->PartNum }}"
                         data-partdesc="{{ $item->PartDesc }}"
                         data-warehouse="{{ $item->WareHouseCode }}"
@@ -102,7 +126,7 @@
                         <i class="fa fa-pencil" style="color: #28a745;"></i>
                     </a>
                     {{-- DELETE button (tong sampah) --}}
-                    <form action="{{ route('admin.vitrox.delete.axi', $item->id) }}" method="POST" style="display:inline;"
+                    <form action="{{ route('admin.vitrox.delete.axi', $item->axi_id) }}" method="POST" style="display:inline;"
                         onsubmit="return confirm('Yakin ingin menghapus data ini? Tindakan ini tidak bisa dibatalkan.');"
                         style="display:inline;">
                         @csrf
@@ -127,13 +151,23 @@
             </td>
 
             <td>{{ $item->mtscbat_remarks }}</td>
-            <td>
+            <!-- <td>
                 @if($item->pictures)
                 <img src="{{ asset($item->pictures) }}" alt="Picture" width="80" height="80">
                 @else
                 <span class="text-muted">No image</span>
                 @endif
+            </td> -->
+            <td>
+                @if($item->images && $item->images->count() > 0)
+                @foreach($item->images as $img)
+                <img src="{{ asset('storage/'.$img->image_path) }}" width="80" class="img-thumbnail">
+                @endforeach
+                @else
+                <span class="text-muted">No image</span>
+                @endif
             </td>
+
         </tr>
         @endforeach
         @endisset
@@ -263,7 +297,7 @@
         <div class="modal-content">
             {{-- form akan submit ke route update (controller harus membuat route dan logic) --}}
             <form id="editAxiForm" method="POST"
-                action="{{ isset($item) ? route('admin.vitrox.update.axi', $item->id) : '' }}"
+                action="{{ isset($item) ? route('admin.vitrox.update.axi', $item->axi_id) : '' }}"
                 enctype="multipart/form-data">
 
                 @csrf
@@ -332,6 +366,12 @@
         </div>
     </div>
 </div>
+
+@foreach($axiData as $item)
+@foreach($item->images as $img)
+<img src="{{ asset('storage/'.$img->image_path) }}" width="80" class="img-thumbnail">
+@endforeach
+@endforeach
 
 
 

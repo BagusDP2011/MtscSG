@@ -14,7 +14,7 @@ class CreateAoisTable extends Migration
     public function up()
     {
         Schema::create('aois', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('aoi_id');
             $table->string('PartNum')->nullable();
             $table->string('PartDesc')->nullable();
             $table->string('WareHouseCode')->nullable();

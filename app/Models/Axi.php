@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Axi extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'axi_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $table = 'axis';
 
@@ -21,4 +24,9 @@ class Axi extends Model
         'mtscbat_remarks',
         'pictures',
     ];
+
+    public function images()
+    {
+        return $this->hasMany(AxiImage::class, 'axi_id');
+    }
 }
