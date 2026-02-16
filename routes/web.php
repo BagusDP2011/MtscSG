@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AoiController;
 use App\Http\Controllers\AxiController;
+use App\Http\Controllers\AxiImageController;
+use App\Http\Controllers\AoiImageController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,17 +32,26 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::prefix('vitrox')->name('vitrox.')->group(function () {
         Route::get('/', [ProductController::class, 'vitDashboard'])->name('vitDashboard');
         Route::get('/machines', [ProductController::class, 'machines'])->name('machines');
-        Route::get('/aoi', [ProductController::class, 'aoi'])->name('aoi');
         Route::get('/spi', [ProductController::class, 'spi'])->name('spi');
-        Route::get('/axi', [ProductController::class, 'axi'])->name('axi');
-        Route::post('/axi/add', [ProductController::class, 'addDataAxi'])->name('add.axi');
-        Route::post('/axi/{id}', [ProductController::class, 'updateAxi'])->name('update.axi');
-        Route::delete('/vitrox/delete/axi/{axi_id}', [ProductController::class, 'destroyAxi'])->name('delete.axi');
-        Route::post('truncate-axi', [ProductController::class, 'truncateAxi'])->name('truncate.axi');
-        Route::post('/import-aoi', [ProductController::class, 'importAoi'])->name('import.aoi');
-        Route::post('/import-axi', [ProductController::class, 'importAxi'])->name('import.axi');
-        Route::post('/axi/bulk-upload-images', [AxiController::class, 'bulkUploadImages'])
-            ->name('axi.bulkUploadImages');
+
+        Route::get('/aoi', [AoiController::class, 'aoi'])->name('aoi');
+        Route::post('/import-aoi', [AoiController::class, 'importAoi'])->name('import.aoi');
+        Route::post('/aoi/add', [aoiController::class, 'addDataaoi'])->name('add.aoi');
+        Route::post('/aoi/{id}', [aoiController::class, 'updateaoi'])->name('update.aoi');
+        Route::post('/import-aoi', [aoiController::class, 'importaoi'])->name('import.aoi');
+        Route::post('/truncate-aoi', [aoiController::class, 'truncateaoi'])->name('truncate.aoi');
+        Route::delete('/vitrox/delete/aoi/{aoi_id}', [aoiController::class, 'destroyaoi'])->name('delete.aoi');
+
+        Route::get('/axi', [AxiController::class, 'axi'])->name('axi');
+        Route::post('/axi/add', [AxiController::class, 'addDataAxi'])->name('add.axi');
+        Route::post('/axi/{id}', [AxiController::class, 'updateAxi'])->name('update.axi');
+        Route::post('/import-axi', [AxiController::class, 'importAxi'])->name('import.axi');
+        Route::post('/truncate-axi', [AxiController::class, 'truncateAxi'])->name('truncate.axi');
+        Route::delete('/vitrox/delete/axi/{axi_id}', [AxiController::class, 'destroyAxi'])->name('delete.axi');
+
+
+        Route::post('/axi/bulk-upload-images/upload', [AxiImageController::class, 'bulkUploadImages'])->name('axi.bulkUploadImages');
+        Route::post('/aoi/bulk-upload-images/upload', [AoiImageController::class, 'bulkUploadImages'])->name('aoi.bulkUploadImages');
     });
 });
 

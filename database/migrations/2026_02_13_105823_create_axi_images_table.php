@@ -14,9 +14,10 @@ class CreateAxiImagesTable extends Migration
     public function up()
     {
         Schema::create('axi_images', function (Blueprint $table) {
-            $table->id();
+            $table->id('axi_images_id'); 
             $table->unsignedBigInteger('axi_id')->nullable();
             $table->string('image_path');
+            $table->string('filename');
             $table->timestamps();
         });
     }

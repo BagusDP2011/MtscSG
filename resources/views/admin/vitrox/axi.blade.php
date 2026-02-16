@@ -22,9 +22,16 @@
             <div class="d-flex align-items-end gap-2">
                 <div class="form-group mb-0 w-100">
                     <label for="file">Upload Excel AXI</label>
-                    <input type="file" name="file" class="form-control" accept=".xlsx, .xls" required>
+                    <input type="file" name="file" class="form-control" accept=".xlsx, .xls" required {{ $axiData->count() > 0 ? 'disabled' : '' }}>
                 </div>
-                <button type="submit" class="btn btn-success mb-1">Import AXI</button>
+                <button type="submit" class="btn btn-success mb-1" {{ $axiData->count() > 0 ? 'disabled' : '' }}>Import AXI</button>
+                <label>
+                    @if ($axiData->count() > 0)
+                    <small class="text-muted d-block mt-2">
+                        AXI data already exists. Import is disabled.
+                    </small>
+                    @endif
+                </label>
             </div>
         </form>
     </div>
@@ -33,9 +40,6 @@
             method="POST"
             enctype="multipart/form-data">
             @csrf
-            {{-- optional: link ke AXI --}}
-            <input type="hidden" name="axi_id" value="{{ $item->axi_id ?? '' }}">
-
             <div class="form-group">
                 <label>Bulk Upload Images</label>
                 <input type="file"
@@ -70,7 +74,7 @@
 </div>
 <div style="border-bottom: 2px solid #ccc; margin: 20px 0;"></div>
 
-<table id="aoiTable" class="table table-bordered table-striped">
+<table id="axiTable" class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
             <th>Aksi</th>
@@ -385,7 +389,7 @@
 <script>
     $(document).ready(function() {
         // init DataTable
-        $('#aoiTable').DataTable({
+        $('#axiTable').DataTable({
             responsive: true,
             pageLength: 10,
             lengthChange: true,
@@ -404,7 +408,7 @@
         });
 
         // DETAIL modal: isi field read-only dan tampilkan
-        $('#aoiTable').on('click', '.btn-detail', function(e) {
+        $('#axiTable').on('click', '.btn-detail', function(e) {
             e.preventDefault();
             var $btn = $(this);
             $('#detailPartNum').text($btn.data('partnum') ?? '');
@@ -427,7 +431,7 @@
         });
 
         // EDIT modal: isi input form dan preview gambar
-        $('#aoiTable').on('click', '.btn-edit', function(e) {
+        $('#axiTable').on('click', '.btn-edit', function(e) {
             e.preventDefault();
             var $btn = $(this);
 
