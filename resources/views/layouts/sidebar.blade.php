@@ -58,7 +58,8 @@
                     <li><a href="#"><i class="fa fa-circle-o"></i> Agilent</a></li> -->
                 </ul>
             </li>
-
+            <li><a href="{{ route('admin.transaction') }}"><i class="fa fa-user-secret"></i> <span>Transactions</span></a></li>
+            <li><a href="{{ route('admin.history') }}"><i class="fa fa-user-secret"></i> <span>History</span></a></li>
 
         </ul>
     </section>

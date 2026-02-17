@@ -8,6 +8,7 @@ use App\Http\Controllers\AxiController;
 use App\Http\Controllers\AxiImageController;
 use App\Http\Controllers\AoiImageController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,21 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/user', [AdminController::class, 'user'])->name('user');
     Route::post('/register', [AdminController::class, 'register'])->name('register');
 
+    Route::get('/history', [TransactionController::class, 'history'])->name('history');
+    Route::get('/transaction', [TransactionController::class, 'Transaction'])->name('transaction');
+
+    Route::prefix('transaction/axi')->name('transaction.axi.')->group(function () {
+        Route::get('/', [TransactionController::class, 'AxiIndex'])->name('AxiPage');
+        Route::get('/create', [TransactionController::class, 'AxiCreate'])->name('AxiCreate');
+        Route::post('/store', [TransactionController::class, 'AxiStore'])->name('AxiStore');
+    });
+
+    // Route::get('/transaction/axi', [TransactionController::class, 'TransactionAxiPage'])->name('transaction.axi.page');
+    // Route::get('/transaction/axi/add', [TransactionController::class, 'AddTransactionAxi'])->name('transaction.axi.add');
+
+
+    Route::get('/transaction/aoi', [TransactionController::class, 'TransactionAoiPage'])->name('transaction.aoi.page');
+
     Route::prefix('vitrox')->name('vitrox.')->group(function () {
         Route::get('/', [ProductController::class, 'vitDashboard'])->name('vitDashboard');
         Route::get('/machines', [ProductController::class, 'machines'])->name('machines');
@@ -36,11 +52,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
         Route::get('/aoi', [AoiController::class, 'aoi'])->name('aoi');
         Route::post('/import-aoi', [AoiController::class, 'importAoi'])->name('import.aoi');
-        Route::post('/aoi/add', [aoiController::class, 'addDataaoi'])->name('add.aoi');
-        Route::post('/aoi/{id}', [aoiController::class, 'updateaoi'])->name('update.aoi');
-        Route::post('/import-aoi', [aoiController::class, 'importaoi'])->name('import.aoi');
-        Route::post('/truncate-aoi', [aoiController::class, 'truncateaoi'])->name('truncate.aoi');
-        Route::delete('/vitrox/delete/aoi/{aoi_id}', [aoiController::class, 'destroyaoi'])->name('delete.aoi');
+        Route::post('/aoi/add', [AoiController::class, 'addDataaoi'])->name('add.aoi');
+        Route::post('/aoi/{id}', [AoiController::class, 'updateaoi'])->name('update.aoi');
+        Route::post('/import-aoi', [AoiController::class, 'importaoi'])->name('import.aoi');
+        Route::post('/truncate-aoi', [AoiController::class, 'truncateaoi'])->name('truncate.aoi');
+        Route::delete('/vitrox/delete/aoi/{aoi_id}', [AoiController::class, 'destroyAoi'])->name('delete.aoi');
 
         Route::get('/axi', [AxiController::class, 'axi'])->name('axi');
         Route::post('/axi/add', [AxiController::class, 'addDataAxi'])->name('add.axi');
@@ -49,12 +65,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::post('/truncate-axi', [AxiController::class, 'truncateAxi'])->name('truncate.axi');
         Route::delete('/vitrox/delete/axi/{axi_id}', [AxiController::class, 'destroyAxi'])->name('delete.axi');
 
-
         Route::post('/axi/bulk-upload-images/upload', [AxiImageController::class, 'bulkUploadImages'])->name('axi.bulkUploadImages');
         Route::post('/aoi/bulk-upload-images/upload', [AoiImageController::class, 'bulkUploadImages'])->name('aoi.bulkUploadImages');
     });
 });
-
-
+        
+        
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
