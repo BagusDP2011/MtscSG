@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aoi;
 use App\Models\Axi;
 use App\Models\InventoryTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
@@ -25,35 +28,7 @@ class TransactionController extends Controller
 
         return view('admin.transaksi.transaction', compact('transaction'));
     }
-    public function TransactionMasuk()
-    {
-        InventoryTransaction::create([
-            'part_number'       => 'IC-NE555',
-            'part_description'  => 'Timer IC',
-            'transaction_type'  => 'IN',
-            'quantity'          => 1000,
-            'uom'               => 'pcs',
-            'warehouse_code'    => 'WH-A',
-            'bin_code'          => 'BIN-01',
-            'reference_type'    => 'PO',
-            'reference_id'      => 'PO-2026-001',
-            'transaction_date'  => now(),
-            'remarks'           => 'Incoming shipment',
-            'created_by'        => auth()->id(),
-        ]);
-    }
-    public function TransactionKeluar()
-    {
-        InventoryTransaction::create([
-            'part_number'       => 'IC-NE555',
-            'transaction_type'  => 'OUT',
-            'quantity'          => -200,
-            'reference_type'    => 'AOI',
-            'reference_id'      => 'AOI-00023',
-            'transaction_date'  => now(),
-            'created_by'        => auth()->id(),
-        ]);
-    }
+
     public function TransactionAxiPage()
     {
         $transaction = InventoryTransaction::all();
@@ -93,51 +68,197 @@ class TransactionController extends Controller
         $request->validate([
             'transaction_date' => 'required|date',
             'part_number'      => 'required|string',
-            'part_desc'        => 'string|nullable',
+            'part_desc'        => 'nullable|string',
             'warehouse_code'   => 'required|string',
-            'bin_code'          => 'string|nullable',
+            'bin_code'         => 'nullable|string',
             'transaction_type' => 'required|in:IN,OUT',
             'quantity'         => 'required|integer|min:1',
-            'remarks'          => 'string|nullable',
-        ]);
-        InventoryTransaction::create([
-            // Machine & reference
-            'machine_type'     => 'AXI',
-            'reference_type'   => 'AXI',
-            'reference_id'     => $request->part_number,
-
-            // Transaction info
-            'transaction_date' => $request->transaction_date,
-            'transaction_type' => $request->transaction_type,
-            'quantity'         => $request->quantity,
-
-            // Item snapshot
-            'part_number'      => $request->part_number,
-            'part_description' => $request->part_desc,
-
-            // Location
-            'warehouse_code'   => $request->warehouse_code,
-            'bin_code'         => $request->bin_code,
-
-            // Remarks
-            'remarks'          => $request->remarks,
-
-            // Audit
-            'created_by'       => Auth::user()->name ?? Auth::user()->fullname ?? null,
+            'remarks'          => 'nullable|string',
         ]);
 
-        Axi::create([
-                'PartNum' => $request->part_number,
-                'PartDesc' => $request->part_desc,
-                'WareHouseCode' => $request->warehouse_code,
-                'BinNum' => $request->bin_code,
-                'MainTranQty' => $request->quantity,
-                'PhysicalQty' => $request->quantity,
-                'mtscbat_remarks' => $request->remarks,
-                'pictures' => '',
+        DB::beginTransaction();
+
+        try {
+
+            // Cari data AXI berdasarkan part number + warehouse + bin
+            $axi = Axi::where('PartNum', $request->part_number)
+                ->where('WareHouseCode', $request->warehouse_code)
+                ->where('BinNum', $request->bin_code)
+                ->first();
+
+            // Kalau IN dan belum ada → buat baru
+            if ($request->transaction_type == 'IN') {
+
+                if ($axi) {
+                    $axi->MainTranQty += $request->quantity;
+                    $axi->PhysicalQty += $request->quantity;
+                    $axi->save();
+                } else {
+                    $axi = Axi::create([
+                        'PartNum'        => $request->part_number,
+                        'PartDesc'       => $request->part_desc,
+                        'WareHouseCode'  => $request->warehouse_code,
+                        'BinNum'         => $request->bin_code,
+                        'MainTranQty'    => $request->quantity,
+                        'PhysicalQty'    => $request->quantity,
+                        'mtscbat_remarks' => $request->remarks,
+                        'pictures'       => '',
+                    ]);
+                }
+            }
+
+            // Kalau OUT → harus cek stok cukup
+            if ($request->transaction_type == 'OUT') {
+
+                if (!$axi) {
+                    return back()->with('error', 'Data part tidak ditemukan.');
+                }
+
+                if ($axi->PhysicalQty < $request->quantity) {
+                    return back()->with('error', 'Stok tidak mencukupi.');
+                }
+
+                $axi->MainTranQty -= $request->quantity;
+                $axi->PhysicalQty -= $request->quantity;
+                $axi->save();
+            }
+
+            // Simpan ke inventory transaction (ledger)
+            InventoryTransaction::create([
+                'machine_type'     => 'AXI',
+                'reference_type'   => 'AXI',
+                'reference_id'     => $request->part_number,
+
+                'transaction_date' => Carbon::parse($request->transaction_date),
+                'transaction_type' => $request->transaction_type,
+                'quantity'         => $request->quantity,
+
+                'part_number'      => $request->part_number,
+                'part_description' => $request->part_desc,
+
+                'warehouse_code'   => $request->warehouse_code,
+                'bin_code'         => $request->bin_code,
+
+                'remarks'          => $request->remarks,
+                'created_by'       => auth()->user()->name ?? null,
             ]);
-        return redirect()
-            ->route('admin.transaction.axi.AxiPage')
-            ->with('success', 'Transaksi AXI berhasil ditambahkan');
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.transaction.axi.AxiPage')
+                ->with('success', 'Transaksi berhasil disimpan.');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+
+
+    ////////// AOI ////////////
+    public function aoiIndex()
+    {
+        $transactions = InventoryTransaction::where('machine_type', 'AOI')
+            ->orderBy('transaction_date', 'desc')
+            ->get();
+
+        return view('admin.transaksi.aoi.AoiCreate', compact('transactions'));
+    }
+    public function aoiCreate()
+    {
+        return view('admin.transaction.aoi.create');
+    }
+    public function aoiStore(Request $request)
+    {
+        $request->validate([
+            'transaction_date' => 'required|date',
+            'part_number'      => 'required|string',
+            'part_desc'        => 'nullable|string',
+            'warehouse_code'   => 'required|string',
+            'bin_code'         => 'nullable|string',
+            'transaction_type' => 'required|in:IN,OUT',
+            'quantity'         => 'required|integer|min:1',
+            'remarks'          => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            // Cari data AXI berdasarkan part number + warehouse + bin
+            $aoi = Aoi::where('PartNum', $request->part_number)
+                ->where('WareHouseCode', $request->warehouse_code)
+                ->where('BinNum', $request->bin_code)
+                ->first();
+
+            // Kalau IN dan belum ada → buat baru
+            if ($request->transaction_type == 'IN') {
+
+                if ($aoi) {
+                    $aoi->MainTranQty += $request->quantity;
+                    $aoi->PhysicalQty += $request->quantity;
+                    $aoi->save();
+                } else {
+                    $aoi = Aoi::create([
+                        'PartNum'        => $request->part_number,
+                        'PartDesc'       => $request->part_desc,
+                        'WareHouseCode'  => $request->warehouse_code,
+                        'BinNum'         => $request->bin_code,
+                        'MainTranQty'    => $request->quantity,
+                        'PhysicalQty'    => $request->quantity,
+                        'mtscbat_remarks' => $request->remarks,
+                        'pictures'       => '',
+                    ]);
+                }
+            }
+
+            // Kalau OUT → harus cek stok cukup
+            if ($request->transaction_type == 'OUT') {
+
+                if (!$aoi) {
+                    return back()->with('error', 'Data part tidak ditemukan.');
+                }
+
+                if ($aoi->PhysicalQty < $request->quantity) {
+                    return back()->with('error', 'Stok tidak mencukupi.');
+                }
+
+                $aoi->MainTranQty -= $request->quantity;
+                $aoi->PhysicalQty -= $request->quantity;
+                $aoi->save();
+            }
+
+            // Simpan ke inventory transaction (ledger)
+            InventoryTransaction::create([
+                'machine_type'     => 'AOI',
+                'reference_type'   => 'AOI',
+                'reference_id'     => $request->part_number,
+
+                'transaction_date' => Carbon::parse($request->transaction_date),
+                'transaction_type' => $request->transaction_type,
+                'quantity'         => $request->quantity,
+
+                'part_number'      => $request->part_number,
+                'part_description' => $request->part_desc,
+
+                'warehouse_code'   => $request->warehouse_code,
+                'bin_code'         => $request->bin_code,
+
+                'remarks'          => $request->remarks,
+                'created_by'       => auth()->user()->name ?? null,
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.transaction.aoi.aoiPage')
+                ->with('success', 'Transaksi berhasil disimpan.');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

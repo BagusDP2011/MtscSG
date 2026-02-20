@@ -38,12 +38,18 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/create', [TransactionController::class, 'AxiCreate'])->name('AxiCreate');
         Route::post('/store', [TransactionController::class, 'AxiStore'])->name('AxiStore');
     });
+    
+    Route::prefix('transaction/aoi')->name('transaction.aoi.')->group(function () {
+        Route::get('/', [TransactionController::class, 'aoiIndex'])->name('aoiPage');
+        Route::get('/create', [TransactionController::class, 'aoiCreate'])->name('aoiCreate');
+        Route::post('/store', [TransactionController::class, 'aoiStore'])->name('aoiStore');
+    });
 
     // Route::get('/transaction/axi', [TransactionController::class, 'TransactionAxiPage'])->name('transaction.axi.page');
     // Route::get('/transaction/axi/add', [TransactionController::class, 'AddTransactionAxi'])->name('transaction.axi.add');
 
 
-    Route::get('/transaction/aoi', [TransactionController::class, 'TransactionAoiPage'])->name('transaction.aoi.page');
+    // Route::get('/transaction/aoi', [TransactionController::class, 'TransactionAoiPage'])->name('transaction.aoi.page');
 
     Route::prefix('vitrox')->name('vitrox.')->group(function () {
         Route::get('/', [ProductController::class, 'vitDashboard'])->name('vitDashboard');

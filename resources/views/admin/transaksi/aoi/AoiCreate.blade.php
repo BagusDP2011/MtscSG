@@ -12,11 +12,11 @@
 
     <div class="card shadow-sm">
         <div class="card-header bg-white">
-            <h4 class="mb-0"><b>Tambah Transaksi AXI</b></h4>
+            <h4 class="mb-0"><b>Tambah Transaksi AOI</b></h4>
         </div>
 
         <div class="card-body">
-            <form action="{{ route('admin.transaction.axi.AxiStore') }}" method="POST">
+            <form action="{{ route('admin.transaction.aoi.aoiStore') }}" method="POST">
                 @csrf
 
                 <div class="row">

@@ -86,7 +86,7 @@
 
         {{-- TRANSAKSI AOI --}}
         <div class="col-md-6 mb-4 d-flex justify-content-center">
-            <a href="{{ route('admin.transaction.aoi.page') }}" class="transaction-card">
+            <a href="{{ route('admin.transaction.aoi.aoiPage') }}" class="transaction-card">
                 <div>
                     <div class="machine-image-wrapper">
                         <img src="{{ asset('assets/img/vitrox-aoi.png') }}" alt="AOI Machine">

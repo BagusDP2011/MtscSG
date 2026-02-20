@@ -9,6 +9,7 @@ class InventoryTransaction extends Model
     protected $table = 'inventory_transactions';
 
     protected $fillable = [
+        'machine_type',
         'part_number',
         'part_description',
         'transaction_type',   // IN | OUT | ADJUST

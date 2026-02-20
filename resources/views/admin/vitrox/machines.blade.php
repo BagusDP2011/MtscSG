@@ -1,6 +1,16 @@
 @extends('layouts.master')
 
 @section('top')
+<style>
+    .transition-card {
+        transition: all 0.3s ease;
+    }
+
+    .transition-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+</style>
 @endsection
 
 @section('content')
@@ -47,14 +57,18 @@
 
         @foreach ($products as $product)
         <div class="col-md-6 col-lg-3 mb-4 d-flex align-items-stretch">
-            <div class="card shadow-sm d-flex flex-column w-100">
-                <!-- {{-- Gambar --}} -->
-                <div style="height: 200px; overflow: hidden;" class="d-flex align-items-center justify-content-center bg-light">
-                    <img src="{{ asset('assets/img/' . $product['image']) }}" alt="Image" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+            <div class="card shadow-xl h-100 border-0 transition-card" style="padding: 10px;">
+
+                {{-- Image --}}
+                <div style="height: 200px; overflow: hidden;"
+                    class="d-flex align-items-center justify-content-center bg-light">
+                    <img src="{{ asset('assets/img/' . $product['image']) }}"
+                        class="img-fluid"
+                        style="max-height: 100%; object-fit: contain;">
                 </div>
 
-                <!-- {{-- Konten --}} -->
-                <div class="card-body d-flex flex-column h-100">
+                {{-- Content --}}
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ $product['title'] }}</h5>
 
                     <p class="card-text flex-grow-1">
@@ -67,9 +81,13 @@
                             <em>* {{ $product['ai_feature'] }}</em>
                         </p>
                         @endif
-                        <a href="#" class="btn btn-primary btn-sm w-100">Learn more</a>
+
+                        <a href="#" class="btn btn-primary btn-sm w-100">
+                            Learn more
+                        </a>
                     </div>
                 </div>
+
             </div>
         </div>
         @endforeach
