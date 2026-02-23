@@ -1,7 +1,9 @@
 <aside class="main-sidebar">
 
     <section class="sidebar">
-
+        @php
+        $isStaff = auth()->user()->role === 'staff';
+        @endphp
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel">
             <div class="pull-left image">
@@ -28,7 +30,9 @@
         <!-- Sidebar Menu -->
         <ul class="sidebar-menu" data-widget="tree">
             <li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+            @if(!$isStaff)
             <li><a href="{{ route('admin.user') }}"><i class="fa fa-user-secret"></i> <span>System Users</span></a></li>
+            @endif
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-cubes"></i> <span>ViTrox Products</span>
@@ -58,8 +62,10 @@
                     <li><a href="#"><i class="fa fa-circle-o"></i> Agilent</a></li>
                 </ul>
             </li> -->
+            @if(!$isStaff)
             <li><a href="{{ route('admin.transaction') }}"><i class="fa fa-exchange" aria-hidden="true"></i> <span>Transactions</span></a></li>
             <li><a href="{{ route('admin.history') }}"><i class="fa fa-history" aria-hidden="true"></i> <span>History</span></a></li>
+            @endif
         </ul>
     </section>
 </aside>

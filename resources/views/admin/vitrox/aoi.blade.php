@@ -5,7 +5,23 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @endsection
 
+@php
+function getAxiImage($part) {
+    $extensions = ['jpg','JPG','png','PNG'];
+    foreach ($extensions as $ext) {
+    $file = public_path("assets/upload/aoi/{$part}.{$ext}");
+        if (file_exists($file)) {
+        return asset("assets/upload/aoi/{$part}.{$ext}");
+        }
+    }
+return null;
+}
+@endphp
+
 @section('content')
+@php
+$isStaff = auth()->user()->role === 'staff';
+@endphp
 
 {{-- ALERT --}}
 @if(session('success'))
@@ -14,6 +30,8 @@
 @if(session('error'))
 <div class="alert alert-danger">{{ session('error') }}</div>
 @endif
+
+@if(auth()->user()->role !== 'staff')
 
 {{-- ================= TOP ACTION ================= --}}
 <div class="row mb-4">
@@ -55,12 +73,13 @@
     </div>
 
     <div class="col-md-8 d-flex"></div>
-    <div class="col-md-2 d-flex" style="padding-left: 10px; padding-bottom: 5px; padding-right: 5px; display:flex; justify-content:flex-end;">
+    <div class="col-md-2 d-flex"></div>
+    <!-- <div class="col-md-2 d-flex" style="padding-left: 10px; padding-bottom: 5px; padding-right: 5px; display:flex; justify-content:flex-end;">
         {{-- Tombol Tambah Data --}}
         <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addAoiModal">
             + Tambah Data Manual
         </button>
-    </div>
+    </div> -->
 
     <div class="col-md-2 d-flex" style="padding-bottom: 5px; padding-right: 10px; display:flex; justify-content:flex-end;">
         <form action="{{ route('admin.vitrox.truncate.aoi') }}" method="POST"
@@ -75,11 +94,15 @@
 
 <div style="border-bottom: 2px solid #ccc; margin: 20px 0;"></div>
 
+@endif
+
 {{-- ================= TABLE ================= --}}
 <table id="aoiTable" class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
+            @if(!$isStaff)
             <th>Aksi</th>
+            @endif
             <th>PartNum</th>
             <th>PartDesc</th>
             <th>WareHouseCode</th>
@@ -93,11 +116,11 @@
     <tbody>
         @foreach($aoiData as $item)
         <tr>
-
+            @if(!$isStaff)
             {{-- AKSI --}}
+            {{-- Detail Button --}}
             <td class="text-center">
                 <div class="d-flex justify-content-center" style="gap:8px;">
-
                     <a href="javascript:void(0)"
                         class="btn-detail"
                         data-toggle="modal"
@@ -141,6 +164,7 @@
 
                 </div>
             </td>
+            @endif
 
             <td>{{ $item->PartNum }}</td>
             <td>{{ $item->PartDesc }}</td>
@@ -158,12 +182,10 @@
 
             {{-- PICTURES --}}
             <td>
-                @if($item->images && $item->images->count())
-                @foreach($item->images as $img)
-                <img src="{{ asset($img->image_path) }}"
-                    width="70"
-                    class="img-thumbnail mb-1">
-                @endforeach
+                @php $img = getAxiImage(trim($item->PartNum)); @endphp
+
+                @if($img)
+                <img src="{{ $img }}" width="70" class="img-thumbnail">
                 @else
                 <span class="text-muted">No image</span>
                 @endif
@@ -218,7 +240,7 @@
     </div>
 </div>
 {{-- Modal Tambah Data --}}
-<div class="modal fade" id="addaoiModal" tabindex="-1" role="dialog" aria-labelledby="addaoiModalLabel" aria-hidden="true">
+<div class="modal fade" id="addAoiModal" tabindex="-1" role="dialog" aria-labelledby="addaoiModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="{{ route('admin.vitrox.add.aoi') }}" method="POST" enctype="multipart/form-data">

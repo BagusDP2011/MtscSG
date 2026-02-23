@@ -5,7 +5,23 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css">
 @endsection
 
+@php
+function getAxiImage($part) {
+    $extensions = ['jpg','JPG','png','PNG'];
+    foreach ($extensions as $ext) {
+    $file = public_path("assets/upload/axi/{$part}.{$ext}");
+        if (file_exists($file)) {
+        return asset("assets/upload/axi/{$part}.{$ext}");
+        }
+    }
+return null;
+}
+@endphp
+
 @section('content')
+@php
+$isStaff = auth()->user()->role === 'staff';
+@endphp
 
 @if(session('success'))
 <div class="alert alert-success">{{ session('success') }}</div>
@@ -14,6 +30,9 @@
 <div class="alert alert-danger">{{ session('error') }}</div>
 @endif
 
+@if(auth()->user()->role !== 'staff')
+
+{{-- =============== TOP =========== --}}
 <div class="row mb-4">
     {{-- Bagian 1: Import AXI --}}
     <div class="col-md-6 mt-5" style="padding-bottom: 50px;">
@@ -56,12 +75,13 @@
     </div>
 
     <div class="col-md-8 d-flex"></div>
-    <div class="col-md-2 d-flex" style="padding-left: 10px; padding-bottom: 5px; padding-right: 5px; display:flex; justify-content:flex-end;">
+    <div class="col-md-2 d-flex"></div>
+    <!-- <div class="col-md-2 d-flex" style="padding-left: 10px; padding-bottom: 5px; padding-right: 5px; display:flex; justify-content:flex-end;">
         {{-- Tombol Tambah Data --}}
         <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addAxiModal">
             + Tambah Data Manual
         </button>
-    </div>
+    </div> -->
 
     <div class="col-md-2 d-flex" style="padding-bottom: 5px; padding-right: 10px; display:flex; justify-content:flex-end;">
         <form action="{{ route('admin.vitrox.truncate.axi') }}" method="POST"
@@ -74,10 +94,15 @@
 </div>
 <div style="border-bottom: 2px solid #ccc; margin: 20px 0;"></div>
 
+@endif
+
+{{-- ======================== Table ================ --}}
 <table id="axiTable" class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
+            @if(!$isStaff)
             <th>Aksi</th>
+            @endif
             <th>PartNum</th>
             <th>PartDesc</th>
             <th>WareHouseCode</th>
@@ -95,12 +120,11 @@
             <td class="text-center">
                 <div class="d-flex justify-content-center align-items-center" style="gap: 8px;">
                     {{-- DETAIL button (mata) --}}
+                    @php $img = getAxiImage(trim($item->PartNum)); @endphp
                     <a href="javascript:void(0);"
                         class="btn-detail"
-                        title="Lihat Detail"
                         data-toggle="modal"
                         data-target="#detailModal"
-                        data-id="{{ $item->axi_id }}"
                         data-partnum="{{ $item->PartNum }}"
                         data-partdesc="{{ $item->PartDesc }}"
                         data-warehouse="{{ $item->WareHouseCode }}"
@@ -108,8 +132,8 @@
                         data-maintranqty="{{ $item->MainTranQty }}"
                         data-physicalqty="{{ $item->PhysicalQty }}"
                         data-remarks="{{ $item->mtscbat_remarks }}"
-                        data-pictures="{{ $item->pictures ? asset($item->pictures) : '' }}">
-                        <i class="fa fa-eye" style="color: #1e88e5; margin-right:8px;"></i>
+                        data-pictures="{{ $img }}">
+                        <i class="fa fa-eye" style="color: #1e88e5;"></i>
                     </a>
 
                     {{-- EDIT button (pensil) --}}
@@ -163,20 +187,20 @@
                 @endif
             </td> -->
             <td>
-                @if($item->images && $item->images->count() > 0)
-                @foreach($item->images as $img)
-                <img src="{{ asset('storage/'.$img->image_path) }}" width="80" class="img-thumbnail">
-                @endforeach
+                @php $img = getAxiImage(trim($item->PartNum)); @endphp
+
+                @if($img)
+                <img src="{{ $img }}" width="70" class="img-thumbnail">
                 @else
                 <span class="text-muted">No image</span>
                 @endif
             </td>
-
         </tr>
         @endforeach
         @endisset
     </tbody>
 </table>
+
 
 {{-- DETAIL Modal (read-only) --}}
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
@@ -191,7 +215,7 @@
             <div class="modal-body">
                 {{-- show pictures (jika ada) --}}
                 <div class="text-center mb-3">
-                    <img id="detailPicture" src="" alt="Preview" style="max-height:200px; max-width:100%; display:none;">
+                    <img id="detailImage" src="" alt="Preview" style="max-height:200px; max-width:100%; display:none;">
                 </div>
 
                 <table class="table table-bordered">
@@ -422,9 +446,9 @@
             // pictures preview (show/hide)
             var pic = $btn.data('pictures') || '';
             if (pic) {
-                $('#detailPicture').attr('src', pic).show();
+                $('#detailImage').attr('src', pic).show();
             } else {
-                $('#detailPicture').hide().attr('src', '');
+                $('#detailImage').hide().attr('src', '');
             }
             e.stopPropagation()
             $('#detailModal').modal('show');
@@ -469,6 +493,19 @@
                 }
                 reader.readAsDataURL(input.files[0]);
             }
+        });
+        // Detail Picture
+        $(document).on("click", ".btn-detail", function() {
+
+            $("#detailImage").attr("src", $(this).data("pictures"));
+
+            // Kalau mau hide kalau kosong
+            if (!$(this).data("pictures")) {
+                $("#detailImage").hide();
+            } else {
+                $("#detailImage").show();
+            }
+
         });
     });
 </script>

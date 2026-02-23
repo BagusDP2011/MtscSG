@@ -5,9 +5,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 @endsection
 
+@php
+$isStaff = auth()->user()->role === 'staff';
+@endphp
+
 @section('content')
 Halo ini konten
 <div class="row">
+    @if(!$isStaff)
     <div class="col-lg-3 col-xs-6">
         <div class="small-box bg-aqua">
             <div class="inner">
@@ -21,6 +26,8 @@ Halo ini konten
             <a href="/admin/user" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
+    @endif
+
     <div class="col-lg-3 col-xs-6">
         <div class="small-box bg-olive">
             <div class="inner">
@@ -47,6 +54,7 @@ Halo ini konten
             <a href="/admin/vitrox/aoi" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
+    @if(!$isStaff)
     <div class="col-lg-3 col-xs-6">
         <div class="small-box bg-red">
             <div class="inner">
@@ -60,6 +68,7 @@ Halo ini konten
             <a href="/admin/user" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
+    @endif
 </div>
 @endsection
 
