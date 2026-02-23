@@ -306,7 +306,7 @@
 
                 @csrf
                 {{-- gunakan hidden id agar controller tahu record mana yang diupdate --}}
-                <input type="hidden" name="id" id="editId">
+                <input type="hidden" name="axi_id" id="editId">
 
                 <div class="modal-header">
                     <h3 id="editModalLabel" class="modal-title"><b>Edit Data AXI</b></h3>

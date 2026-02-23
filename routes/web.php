@@ -59,14 +59,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/aoi', [AoiController::class, 'aoi'])->name('aoi');
         Route::post('/import-aoi', [AoiController::class, 'importAoi'])->name('import.aoi');
         Route::post('/aoi/add', [AoiController::class, 'addDataaoi'])->name('add.aoi');
-        Route::post('/aoi/{id}', [AoiController::class, 'updateaoi'])->name('update.aoi');
+        Route::post('/aoi/{id}/edit', [AoiController::class, 'updateaoi'])->name('update.aoi');
         Route::post('/import-aoi', [AoiController::class, 'importaoi'])->name('import.aoi');
         Route::post('/truncate-aoi', [AoiController::class, 'truncateaoi'])->name('truncate.aoi');
         Route::delete('/vitrox/delete/aoi/{aoi_id}', [AoiController::class, 'destroyAoi'])->name('delete.aoi');
 
         Route::get('/axi', [AxiController::class, 'axi'])->name('axi');
         Route::post('/axi/add', [AxiController::class, 'addDataAxi'])->name('add.axi');
-        Route::post('/axi/{id}', [AxiController::class, 'updateAxi'])->name('update.axi');
+        Route::post('/axi/{id}/edit', [AxiController::class, 'updateAxi'])->name('update.axi');
         Route::post('/import-axi', [AxiController::class, 'importAxi'])->name('import.axi');
         Route::post('/truncate-axi', [AxiController::class, 'truncateAxi'])->name('truncate.axi');
         Route::delete('/vitrox/delete/axi/{axi_id}', [AxiController::class, 'destroyAxi'])->name('delete.axi');

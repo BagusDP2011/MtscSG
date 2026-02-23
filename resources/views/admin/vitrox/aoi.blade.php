@@ -34,7 +34,7 @@
                 <label>
                     @if ($aoiData->count() > 0)
                     <small class="text-muted d-block mt-2">
-                        AXI data already exists. Import is disabled.
+                        AOI data already exists. Import is disabled.
                     </small>
                     @endif
                 </label>
@@ -57,17 +57,17 @@
     <div class="col-md-8 d-flex"></div>
     <div class="col-md-2 d-flex" style="padding-left: 10px; padding-bottom: 5px; padding-right: 5px; display:flex; justify-content:flex-end;">
         {{-- Tombol Tambah Data --}}
-        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addAxiModal">
+        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addAoiModal">
             + Tambah Data Manual
         </button>
     </div>
 
     <div class="col-md-2 d-flex" style="padding-bottom: 5px; padding-right: 10px; display:flex; justify-content:flex-end;">
-        <form action="{{ route('admin.vitrox.truncate.axi') }}" method="POST"
-            onsubmit="return confirm('Yakin ingin mengosongkan seluruh data AXI? Tindakan ini tidak bisa dibatalkan.');"
+        <form action="{{ route('admin.vitrox.truncate.aoi') }}" method="POST"
+            onsubmit="return confirm('Yakin ingin mengosongkan seluruh data AOI? Tindakan ini tidak bisa dibatalkan.');"
             class="w-50">
             @csrf
-            <button type="submit" class="btn btn-danger w-50">Truncate AXI</button>
+            <button type="submit" class="btn btn-danger w-50">Truncate AOI</button>
         </form>
     </div>
 
@@ -292,7 +292,7 @@
 
                 @csrf
                 {{-- gunakan hidden id agar controller tahu record mana yang diupdate --}}
-                <input type="hidden" name="id" id="editId">
+                <input type="hidden" name="aoi_id" id="editId">
 
                 <div class="modal-header">
                     <h3 id="editModalLabel" class="modal-title"><b>Edit Data aoi</b></h3>
