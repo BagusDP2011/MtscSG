@@ -29,13 +29,14 @@ class AdminController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'role'     => 'required|in:admin,staff',
         ]);
 
         User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => bcrypt($request->password),
-            'role' => 'staff',
+            'role'     => $request->role,
         ]);
 
         return redirect()->back()->with('success', 'User successfully added.');

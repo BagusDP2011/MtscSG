@@ -38,8 +38,16 @@
                         <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required data-match="#password" data-match-error="Passwords do not match">
                         <span class="help-block with-errors"></span>
                     </div>
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="">-- Select Role --</option>
+                            <option value="admin">Admin</option>
+                            <option value="staff">Staff</option>
+                        </select>
+                        <span class="help-block with-errors"></span>
+                    </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Submit</button>
@@ -51,4 +59,3 @@
 </div>
 
 <script src="{{ asset('assets/plugins/validator/validator.min.js') }}"></script>
-
