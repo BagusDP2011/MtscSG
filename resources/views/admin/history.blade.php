@@ -3,6 +3,7 @@
 @section('top')
 {{-- DataTables Bootstrap 3 --}}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap.min.css">
 @endsection
 
 @section('content')
@@ -47,7 +48,7 @@
                 </thead>
 
                 <tbody>
-                    @forelse($transaction as $index => $row)
+                    @foreach($transaction as $index => $row)
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
 
@@ -96,13 +97,7 @@
 
                         <td>{{ $row->created_by }}</td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="14" class="text-center text-muted">
-                            Belum ada data transaksi
-                        </td>
-                    </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
 
@@ -118,10 +113,28 @@
 {{-- jQuery & DataTables --}}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 
 <script>
     $(document).ready(function() {
         $('#transactionTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [{
+                extend: 'pdf',
+                text: 'Export PDF',
+                title: 'History Transaksi Inventory'
+            }, {
+                extend: 'excel',
+                text: 'Export Excel',
+            },'copy'],
             order: [
                 [1, 'desc']
             ],

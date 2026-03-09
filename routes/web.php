@@ -23,23 +23,27 @@ use App\Http\Controllers\TransactionController;
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form')->middleware('guest');
 Route::post('/', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/user', [AdminController::class, 'user'])->name('user');
-    Route::post('/register', [AdminController::class, 'register'])->name('register');
+    Route::get('/user', [AdminController::class, 'user'])
+        ->middleware(['auth', 'admin'])
+        ->name('user');
+    Route::post('/register', [AdminController::class, 'register'])
+        ->middleware(['auth', 'admin'])
+        ->name('register');
 
-    Route::get('/history', [TransactionController::class, 'history'])->name('history');
-    Route::get('/transaction', [TransactionController::class, 'Transaction'])->name('transaction');
+    Route::get('/history', [TransactionController::class, 'history'])->middleware(['auth', 'admin'])->name('history');
+    Route::get('/transaction', [TransactionController::class, 'Transaction'])->middleware(['auth', 'admin'])->name('transaction');
 
-    Route::prefix('transaction/axi')->name('transaction.axi.')->group(function () {
+    Route::prefix('transaction/axi')->middleware(['auth', 'admin'])->name('transaction.axi.')->group(function () {
         Route::get('/', [TransactionController::class, 'AxiIndex'])->name('AxiPage');
         Route::get('/create', [TransactionController::class, 'AxiCreate'])->name('AxiCreate');
         Route::post('/store', [TransactionController::class, 'AxiStore'])->name('AxiStore');
     });
-    
-    Route::prefix('transaction/aoi')->name('transaction.aoi.')->group(function () {
+
+    Route::prefix('transaction/aoi')->middleware(['auth', 'admin'])->name('transaction.aoi.')->group(function () {
         Route::get('/', [TransactionController::class, 'aoiIndex'])->name('aoiPage');
         Route::get('/create', [TransactionController::class, 'aoiCreate'])->name('aoiCreate');
         Route::post('/store', [TransactionController::class, 'aoiStore'])->name('aoiStore');
@@ -60,7 +64,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::post('/import-aoi', [AoiController::class, 'importAoi'])->name('import.aoi');
         Route::post('/aoi/add', [AoiController::class, 'addDataaoi'])->name('add.aoi');
         Route::post('/aoi/{id}/edit', [AoiController::class, 'updateaoi'])->name('update.aoi');
-        Route::post('/import-aoi', [AoiController::class, 'importaoi'])->name('import.aoi');
         Route::post('/truncate-aoi', [AoiController::class, 'truncateaoi'])->name('truncate.aoi');
         Route::delete('/vitrox/delete/aoi/{aoi_id}', [AoiController::class, 'destroyAoi'])->name('delete.aoi');
 

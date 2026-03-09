@@ -29,6 +29,16 @@ class AddAdminUserToUsersTable extends Migration
             'updated_at' => Carbon::now(),
             'role' => 'admin',
         ]);
+        DB::table('users')->insert([
+            'user_id' => 3,
+            'name' => 'Tester',
+            'email' => 'tester@gmail.com',
+            'password' => Hash::make('123123'), // hash password baru
+            'remember_token' => null,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'role' => 'staff',
+        ]);
     }
 
     public function down(): void

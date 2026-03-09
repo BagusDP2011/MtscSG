@@ -47,6 +47,10 @@ class AoiController extends Controller
             $validated['pictures'] = 'assets/upload/' . $filename;
         }
 
+        // cek duplicate
+        if (Aoi::where('PartNum', $validated['PartNum'])->exists()) {
+            return redirect()->back()->with('error', 'PartNum already exists. Data skipped.');
+        }
 
         Aoi::create($validated);
 
@@ -106,5 +110,4 @@ class AoiController extends Controller
             return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
     }
-
 }
