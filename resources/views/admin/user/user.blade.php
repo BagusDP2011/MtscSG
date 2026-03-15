@@ -24,8 +24,10 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th width="120">Action</th>
                 </tr>
             </thead>
+
             <tbody>
                 @foreach ($users as $user)
                 <tr>
@@ -33,27 +35,61 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->role }}</td>
+
+                    <td>
+
+                        <!-- EDIT BUTTON -->
+                        <button class="btn btn-xs btn-primary"
+                            data-toggle="modal"
+                            data-target="#editUser{{ $user->user_id }}">
+                            <i class="fa fa-edit"></i>
+                        </button>
+
+                        <!-- DELETE BUTTON -->
+                        @if(!in_array($user->user_id,[1,2,3]))
+                        <form action="{{ route('admin.user.delete',$user->user_id) }}"
+                            method="POST"
+                            style="display:inline-block"
+                            onsubmit="return confirm('Are you sure want to delete this user?')">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <button class="btn btn-xs btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                        @endif
+
+                    </td>
+
                 </tr>
+
+                <!-- INCLUDE EDIT MODAL -->
+                @include('admin.user.formEdit')
+
                 @endforeach
             </tbody>
+
         </table>
     </div>
 </div>
+
 @include('admin.user.formRegister')
+
 @endsection
 
 @section('bot')
-<!-- DataTables -->
 <script src="{{ asset('assets/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
 
-<script type="text/javascript">
-    $(function() {
-        $('#user-table').DataTable();
-    });
-    $(function() {
-        $('#form-item').validator();
-    });
-</script>
+<script>
+$(function() {
+    $('#user-table').DataTable();
+});
 
+$(function() {
+    $('#form-item').validator();
+});
+</script>
 @endsection

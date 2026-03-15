@@ -33,6 +33,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/register', [AdminController::class, 'register'])
         ->middleware(['auth', 'admin'])
         ->name('register');
+    Route::put('/user/{user_id}/edit', [AdminController::class, 'editUser'])
+        ->middleware(['auth', 'admin'])
+        ->name('user.edit');
+    Route::delete('/user/{user_id}/delete', [AdminController::class, 'deleteUser'])
+        ->middleware(['auth', 'admin'])
+        ->name('user.delete');
 
     Route::get('/history', [TransactionController::class, 'history'])->middleware(['auth', 'admin'])->name('history');
     Route::get('/transaction', [TransactionController::class, 'Transaction'])->middleware(['auth', 'admin'])->name('transaction');
