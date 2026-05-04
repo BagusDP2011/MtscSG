@@ -10,7 +10,6 @@ $isStaff = auth()->user()->role === 'staff';
 @endphp
 
 @section('content')
-Halo ini konten
 <div class="row">
     @if(!$isStaff)
     <div class="col-lg-3 col-xs-6">

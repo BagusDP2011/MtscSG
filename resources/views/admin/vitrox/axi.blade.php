@@ -7,13 +7,13 @@
 
 @php
 function getAxiImage($part) {
-    $extensions = ['jpg','JPG','png','PNG'];
-    foreach ($extensions as $ext) {
-    $file = public_path("assets/upload/axi/{$part}.{$ext}");
-        if (file_exists($file)) {
-        return asset("assets/upload/axi/{$part}.{$ext}");
-        }
-    }
+$extensions = ['jpg','JPG','png','PNG'];
+foreach ($extensions as $ext) {
+$file = public_path("assets/upload/axi/{$part}.{$ext}");
+if (file_exists($file)) {
+return asset("assets/upload/axi/{$part}.{$ext}");
+}
+}
 return null;
 }
 @endphp
@@ -117,6 +117,7 @@ $isStaff = auth()->user()->role === 'staff';
         @isset($axiData)
         @foreach ($axiData as $item)
         <tr>
+            @if(!$isStaff)
             <td class="text-center">
                 <div class="d-flex justify-content-center align-items-center" style="gap: 8px;">
                     {{-- DETAIL button (mata) --}}
@@ -165,6 +166,7 @@ $isStaff = auth()->user()->role === 'staff';
                     </form>
                 </div>
             </td>
+            @endif
 
             <td>{{ $item->PartNum }}</td>
             <td>{{ $item->PartDesc }}</td>
