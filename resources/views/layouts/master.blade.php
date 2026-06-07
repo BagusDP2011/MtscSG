@@ -17,7 +17,6 @@
     <link href="{{ asset('assets/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="96x96" href="{{asset('assets/img/inven12.jpg')}}">
 
-
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/dist/css/AdminLTE.min.css')}} ">
     <link rel="stylesheet" href="{{ asset('assets/dist/css/skins/skin-purple-light.min.css')}} ">

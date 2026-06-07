@@ -67,7 +67,7 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .fancy-checkbox span {
@@ -117,6 +117,9 @@
                             </label>
                         </div>
                         <button type="submit" class="btn btn-success btn-lg btn-block">LOGIN</button>
+                        <a href="/home" class="btn btn-outline-primary btn-lg btn-block">
+                            <i class="fa fa-home"></i> Visit Homepage
+                        </a>
                     </form><br>
                     <br>
                 </div>

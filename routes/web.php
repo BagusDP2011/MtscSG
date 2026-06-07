@@ -21,6 +21,7 @@ use App\Http\Controllers\TransactionController;
 |
 */
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form')->middleware('guest');
 Route::post('/', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
@@ -87,4 +88,4 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         
         
 
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form')->middleware('guest');
