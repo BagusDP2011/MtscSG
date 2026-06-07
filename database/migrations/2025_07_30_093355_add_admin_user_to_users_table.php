@@ -13,7 +13,7 @@ class AddAdminUserToUsersTable extends Migration
             'user_id' => 1,
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
-            'password' => '$2y$10$7dN5zrYhA2OdWUHZHINWj.oi.2xMRYp7bCZyJaTzq1cb2xu47/H9q',
+            'password' => Hash::make('123123'),
             'remember_token' => 'b36mRP1DAX24bRhparPpIJMkiIWeB7hP2TDZu1cgqhLe1vnx6Aomkm3FNtX9',
             'created_at' => Carbon::parse('2025-04-21 01:04:06'),
             'updated_at' => null,
