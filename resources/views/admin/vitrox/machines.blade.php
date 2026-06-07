@@ -56,16 +56,18 @@
 
 
         @foreach ($products as $product)
-        <div class="col-md-6 col-lg-3 mb-4 d-flex align-items-stretch">
-            <div class="card shadow-xl h-100 border-0 transition-card" style="padding: 10px;">
+        <div class="col-md-6 col-lg-3 mb-4 d-flex align-items-stretch px-2">
+            <div class="card shadow-xl h-100 rounded transition-card bg-gray" style="padding: 10px; border-radius: 20px;">
 
                 {{-- Image --}}
-                <div style="height: 200px; overflow: hidden;"
-                    class="d-flex align-items-center justify-content-center bg-light">
-                    <img src="{{ asset('assets/img/' . $product['image']) }}"
-                        class="img-fluid"
-                        style="max-height: 100%; object-fit: contain;">
-                </div>
+                <center>
+                    <div style="height: 200px; overflow: hidden;"
+                        class="d-flex align-items-center justify-content-center bg-light">
+                        <img src="{{ asset('assets/img/' . $product['image']) }}"
+                            class="img-fluid"
+                            style="max-height: 100%; object-fit: contain;">
+                    </div>
+                </center>
 
                 {{-- Content --}}
                 <div class="card-body d-flex flex-column">
