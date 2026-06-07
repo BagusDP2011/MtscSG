@@ -51,8 +51,8 @@
                     @foreach($transaction as $index => $row)
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
-
-                        <td>
+                        
+                        <td data-order="{{ strtotime($row->transaction_date) }}">
                             {{ \Carbon\Carbon::parse($row->transaction_date)->format('d-m-Y H:i') }}
                         </td>
 
@@ -134,7 +134,7 @@
             }, {
                 extend: 'excel',
                 text: 'Export Excel',
-            },'copy'],
+            }, 'copy'],
             order: [
                 [1, 'desc']
             ],

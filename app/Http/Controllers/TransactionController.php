@@ -14,7 +14,8 @@ class TransactionController extends Controller
 {
     public function history()
     {
-        $transaction = InventoryTransaction::all();
+        // $transaction = InventoryTransaction::all();
+        $transaction = InventoryTransaction::orderBy('transaction_date', 'asc')->get();
         return view('admin.history', compact('transaction'));
     }
     public function Transaction()
