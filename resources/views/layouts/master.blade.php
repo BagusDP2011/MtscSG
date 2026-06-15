@@ -123,6 +123,7 @@
     <!-- 1000hz Bootstrap Validator -->
     <script src="{{ asset('assets/plugins/validator/validator.min.js') }}"></script>
     @yield('bot')
+    @stack('scripts')
 </body>
 
 </html>

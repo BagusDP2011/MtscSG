@@ -48,12 +48,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/', [TransactionController::class, 'AxiIndex'])->name('AxiPage');
         Route::get('/create', [TransactionController::class, 'AxiCreate'])->name('AxiCreate');
         Route::post('/store', [TransactionController::class, 'AxiStore'])->name('AxiStore');
+        Route::get('/part-description', [TransactionController::class, 'getAxiDescription'])->name('get-description');
     });
 
     Route::prefix('transaction/aoi')->middleware(['auth', 'admin'])->name('transaction.aoi.')->group(function () {
         Route::get('/', [TransactionController::class, 'aoiIndex'])->name('aoiPage');
         Route::get('/create', [TransactionController::class, 'aoiCreate'])->name('aoiCreate');
         Route::post('/store', [TransactionController::class, 'aoiStore'])->name('aoiStore');
+        Route::get('/part-description', [TransactionController::class, 'getDescription'])->name('part.get-description');
     });
 
     // Route::get('/transaction/axi', [TransactionController::class, 'TransactionAxiPage'])->name('transaction.axi.page');
